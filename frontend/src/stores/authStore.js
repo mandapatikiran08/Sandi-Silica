@@ -15,7 +15,7 @@ export const useAuthStore = create((set) => ({
       set({ user: res.data });
       toast.success("Account created successfully!");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Signup failed");
+      toast.error(error.response?.data?.message || "Enter valid credentials");
     } finally {
       set({ isSigningUp: false });
     }
@@ -30,7 +30,7 @@ export const useAuthStore = create((set) => ({
       set({ user: res.data });
       toast.success("Logged in successfully!");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed");
+      toast.error(error.response?.data?.message || "Enter valid credentials");
     } finally {
       set({ isLoggingIn: false });
     }

@@ -1,8 +1,17 @@
 import React from "react";
 import { useAuthStore } from "../stores/authStore";
+import { useNavigate } from "react-router-dom";
+
 
 const Dashboard = () => {
+  const navigate = useNavigate(); // initialize navigate
   const { user, logout } = useAuthStore();
+
+  const handleLogout = () => {
+    logout();          // clear user state
+    navigate("/"); // redirect to /home
+  };
+
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start p-8">
@@ -10,7 +19,7 @@ const Dashboard = () => {
         <h1 className="text-3xl font-bold text-blue-600">Dashboard</h1>
         <button
           className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-          onClick={logout}
+          onClick={handleLogout}
         >
           Logout
         </button>

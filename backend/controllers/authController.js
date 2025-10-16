@@ -10,24 +10,31 @@ export const registerUser = async (req, res) => {
   try {
     const { email, mobile, companyName, address, password } = req.body;
     console.log(req.body);
+
     // 1. Check required fields
     if (!email || !mobile || !password) {
       return res.status(400).json({ msg: "Email, mobile, and password are required" });
     }
-  
 
-    // 2. Check if user already exists
+    // 2. Validate mobile number (only digits, 10 digits, cannot start with 0)
+    const mobileRegex = /^[1-9][0-9]{9}$/;
+    if (!mobileRegex.test(mobile)) {
+      return res.status(400).json({
+        msg: "Invalid mobile number. It must be 10 digits and cannot start with 0.",
+      });
+    }
+
+    // 3. Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ msg: "User with this email already exists" });
     }
 
-
-    // 3. Hash password
+    // 4. Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // 4. Create user
+    // 5. Create user
     const newUser = await User.create({
       email,
       mobile,
@@ -36,11 +43,11 @@ export const registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
-    // 5. Create JWT
-    generateToken(newUser._id,res);
+    // 6. Generate JWT
+    generateToken(newUser._id, res);
     await newUser.save();
 
-    // 6. Send response
+    // 7. Send response
     res.status(201).json({
       user: {
         id: newUser._id,
@@ -55,6 +62,7 @@ export const registerUser = async (req, res) => {
     res.status(500).json({ msg: "Server error" });
   }
 };
+
 
 // ------------------ LOGIN ------------------
 export const loginUser = async (req, res) => {
